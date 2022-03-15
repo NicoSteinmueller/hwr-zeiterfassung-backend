@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Scan') {
             steps {
-                 withSonarQubeEnv() {
+                 withSonarQubeEnv(installationName: 'sonarqube') {
                    sh "/mvn clean verify sonar:sonar -Dsonar.projectKey=HWR-Zeiterfassung"
                  }
             }
