@@ -17,7 +17,7 @@ pipeline {
                 script {
                     try {
                         // do the build here
-                        setBuildStatus("Build complete", "SUCCESS");
+                        setBuildStatus("Build complete", "FAILED");
                     } catch (err) {
                         setBuildStatus("Build complete", "SUCCESS");
                         throw err
