@@ -1,16 +1,11 @@
-void setBuildStatus(String message, String context, String state) {
-  // add a Github access token as a global 'secret text' credential on Jenkins with the id 'github-commit-status-token'
-    withCredentials([string(credentialsId: 'GithubAccessToken', variable: 'TOKEN')]) {
-      // 'set -x' for debugging. Don't worry the access token won't be actually logged
-      // Also, the sh command actually executed is not properly logged, it will be further escaped when written to the log
-        sh """
-            set -x
-            curl \"https://api.github.com/repos/org/repo/statuses/$GIT_COMMIT?access_token=$TOKEN\" \
-                -H \"Content-Type: application/json\" \
-                -X POST \
-                -d \"{\\\"description\\\": \\\"$message\\\", \\\"state\\\": \\\"$state\\\", \\\"context\\\": \\\"$context\\\", \\\"target_url\\\": \\\"$BUILD_URL\\\"}\"
-        """
-    }
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/my-org/my-repo"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
 }
 
 pipeline {
@@ -18,13 +13,13 @@ pipeline {
     stages {
         stage('Stage') {
             steps {
-                setBuildStatus("Compiling", "compile", "pending");
+                setBuildStatus("Build complete", "SUCCESS");
                 script {
                     try {
                         // do the build here
-                        setBuildStatus("Build complete", "compile", "success");
+                        setBuildStatus("Build complete", "SUCCESS");
                     } catch (err) {
-                        setBuildStatus("Failed", "pl-compile", "failure");
+                        setBuildStatus("Build complete", "SUCCESS");
                         throw err
                     }
                 }
