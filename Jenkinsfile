@@ -16,6 +16,7 @@ pipeline {
                 setBuildStatus("Build complete", "failure");
                 script {
                     try {
+                        sleep(500000)
                         /asd
                         setBuildStatus("Build complete", "failure");
                     } catch (err) {
