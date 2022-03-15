@@ -13,13 +13,13 @@ pipeline {
     stages {
         stage('Stage') {
             steps {
-                setBuildStatus("Build complete", "SUCCESS");
+                setBuildStatus("Build complete", "failure");
                 script {
                     try {
                         // do the build here
-                        setBuildStatus("Build complete", "FAILED");
+                        setBuildStatus("Build complete", "failure");
                     } catch (err) {
-                        setBuildStatus("Build complete", "SUCCESS");
+                        setBuildStatus("Build complete", "failure");
                         throw err
                     }
                 }
