@@ -1,11 +1,18 @@
 pipeline {
     agent any
     stages {
-        stage('Scan') {
+        stage('build & SonarQube analysis') {
             steps {
                  withSonarQubeEnv(installationName: 'sonarqube') {
                    sh "mvn clean verify sonar:sonar -Dsonar.projectKey=HWR-Zeiterfassung"
                  }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
