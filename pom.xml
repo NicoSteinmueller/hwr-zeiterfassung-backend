@@ -9,35 +9,36 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hwr</groupId>
-    <artifactId>hwr-zeiterfassung</artifactId>
+    <artifactId>hwr-zeiterfassung-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hwr-zeiterfassung</name>
-    <description>hwr-zeiterfassung</description>
+    <name>hwr-zeiterfassung-backend</name>
+    <description>hwr-zeiterfassung-backend</description>
     <properties>
         <java.version>17</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.6.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.owasp/dependency-check-maven -->
         <dependency>
             <groupId>org.owasp</groupId>
             <artifactId>dependency-check-maven</artifactId>
             <version>7.0.0</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+            <version>2.6.4</version>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.6.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -70,13 +71,16 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <!-- never fail when over 10 -->
+                    <failBuildOnCVSS>11</failBuildOnCVSS>
                     <!-- Generate all report formats -->
                     <format>ALL</format>
                     <!-- Don't use Nexus Analyzer -->
                     <centralAnalyzerEnabled>false</centralAnalyzerEnabled>
                     <!-- Am I the latest version? -->
                     <versionCheckEnabled>true</versionCheckEnabled>
+                    <skipProvidedScope>true</skipProvidedScope>
+                    <skipRuntimeScope>true</skipRuntimeScope>
                 </configuration>
             </plugin>
 
