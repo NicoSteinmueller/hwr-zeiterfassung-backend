@@ -77,8 +77,7 @@ tools {
                 environment name: 'BRANCH_NAME', value: 'release'
             }
             steps {
-                //sh "mvndependency-check:check"
-                echo env.BRANCH_NAME
+                sh "mvn dependency-check:check"
             }
         }
 
