@@ -1,7 +1,7 @@
 pipeline {
 
 environment {
-registry = "stier09/hwr-zeiterfassung"
+registry = "stier09/hwr-zeiterfassung-backend"
 registryCredential = 'dockerhub-credentials'
 dockerImage = ''
 }
