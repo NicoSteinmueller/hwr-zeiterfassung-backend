@@ -19,9 +19,12 @@ tools {
 
         stage('clean Project') {
             steps {
+            withCredentials([string(credentialsId: 'HWR-Zeiterfassung-Database-Password', variable: 'passwd')]){
                 sh "java --version"
                 sh "mvn --version"
                 sh "mvn clean"
+                sh "sed -i 's/(datasource_password)/${passwd}/g' src/main/resources/application.yml"
+            }
             }
         }
 
