@@ -1,5 +1,6 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -37,10 +38,12 @@ public class Human {
 
     @OneToOne(mappedBy = "human", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private Login login;
 
 
     @OneToMany(mappedBy = "human")
+    @JsonIgnore
     private Set<Day> days;
 
     @ManyToMany

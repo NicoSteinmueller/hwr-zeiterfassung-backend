@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@Table
 public class Login {
     @Id
     @Column(name = "email")
