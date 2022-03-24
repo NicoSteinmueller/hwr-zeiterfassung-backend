@@ -1,5 +1,6 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,5 +14,6 @@ public class Role {
     private String name;
 
     @OneToOne(mappedBy = "role")
+    @JsonIgnore
     private Human human;
 }

@@ -1,5 +1,6 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@Table
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,8 +23,10 @@ public class Project {
 
 
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private Set<Time> time;
 
     @ManyToMany(mappedBy = "projects")
+    @JsonIgnore
     private Set<Human> humans;
 }
