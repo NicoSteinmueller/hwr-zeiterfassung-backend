@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -18,9 +18,9 @@ public class LoginController {
     @Autowired
     private LoginRepository loginRepository;
 
-    @GetMapping("/basicLogin")
+    @PostMapping("/basicLogin")
     public ResponseEntity<HttpStatus> basicLogin(@RequestParam String email, @RequestParam String password) {
-        if (validateLoginInformations(email, password)) {
+        if (validateLoginInformation(email, password)) {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -28,7 +28,7 @@ public class LoginController {
     }
 
 
-    private boolean validateLoginInformations(String email, String password) {
+    private boolean validateLoginInformation(String email, String password) {
         Optional<Login> login = loginRepository.findById(email);
         if (login.isEmpty()) {
             return false;
