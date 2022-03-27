@@ -1,11 +1,13 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
 @Table
 public class Login {
     @Id
