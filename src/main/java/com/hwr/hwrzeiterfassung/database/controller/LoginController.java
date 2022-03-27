@@ -28,7 +28,7 @@ public class LoginController {
     }
 
 
-    private boolean validateLoginInformation(String email, String password) {
+    public boolean validateLoginInformation(String email, String password) {
         Optional<Login> login = loginRepository.findById(email);
         if (login.isEmpty()) {
             return false;
