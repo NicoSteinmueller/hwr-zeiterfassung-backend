@@ -1,12 +1,14 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
 @Table
 public class Time {
     @Id
