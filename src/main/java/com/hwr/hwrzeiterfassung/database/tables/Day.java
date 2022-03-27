@@ -1,14 +1,16 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Data
+@NoArgsConstructor
+@Getter
 @Table
 public class Day {
     @Id
