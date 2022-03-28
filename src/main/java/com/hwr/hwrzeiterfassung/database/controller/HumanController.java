@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping(path = "/human")
 public class HumanController {
@@ -31,7 +34,25 @@ public class HumanController {
             return human.get().getProjects();
         }
         return (Iterable<Project>) new Project();
+    }
 
+    @GetMapping(path = "/name")
+    public @ResponseBody
+    Map<String, String> getHumanName(@RequestParam String email, @RequestParam String password) {
+
+        if (!loginController.validateLoginInformation(email, password)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        }
+
+        var human = humanRepository.findById(email);
+        if (human.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Human don't exists");
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("firstName", human.get().getFirstName());
+        map.put("lastName", human.get().getLastName());
+        return map;
     }
 
 }
