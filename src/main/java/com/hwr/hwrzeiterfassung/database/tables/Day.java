@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -20,8 +20,8 @@ public class Day {
 
     @Column(name = "target_daily_working_time", columnDefinition = "DOUBLE")
     private double targetDailyWorkingTime;
-    @Column(name = "day", nullable = false)
-    private Date date;
+    @Column(name = "day", nullable = false, columnDefinition = "DATE")
+    private LocalDate date;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -32,4 +32,9 @@ public class Day {
     @JsonIgnore
     private Set<Time> time;
 
+    public Day(LocalDate date, double targetDailyWorkingTime, Human human) {
+        this.date = date;
+        this.targetDailyWorkingTime = targetDailyWorkingTime;
+        this.human = human;
+    }
 }
