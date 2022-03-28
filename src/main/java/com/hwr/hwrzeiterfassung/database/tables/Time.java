@@ -2,13 +2,15 @@ package com.hwr.hwrzeiterfassung.database.tables;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.joda.time.DateTime;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 @Table
 public class Time {
     @Id
@@ -17,13 +19,13 @@ public class Time {
     private long id;
 
     @Column(name = "start", columnDefinition = "datetime")
-    private DateTime start;
+    private LocalDateTime start;
 
     @Column(name = "end", columnDefinition = "datetime")
-    private DateTime end;
+    private LocalDateTime end;
 
-    @Column(name = "isBreak", nullable = false, columnDefinition = "bit default 0")
-    private boolean isBreak;
+    @Column(name = "pause", nullable = false, columnDefinition = "bit default 0")
+    private boolean pause;
 
     @Column(name = "note", columnDefinition = "TEXT")
     private String note;
@@ -37,4 +39,13 @@ public class Time {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     private Project project;
+
+    public Time(LocalDateTime start, LocalDateTime end, boolean pause, String note, Day day, Project project) {
+        this.start = start;
+        this.end = end;
+        this.pause = pause;
+        this.note = note;
+        this.day = day;
+        this.project = project;
+    }
 }
