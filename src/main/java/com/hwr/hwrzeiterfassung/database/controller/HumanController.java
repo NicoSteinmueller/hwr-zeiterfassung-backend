@@ -46,7 +46,7 @@ public class HumanController {
 
         var human = humanRepository.findById(email);
         if (human.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Human don't exists");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Human doesn't exists");
         }
 
         Map<String, String> map = new HashMap<>();
