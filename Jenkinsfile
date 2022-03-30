@@ -60,7 +60,7 @@ tools {
             }
         }
 
-          stage("Quality Gate") {
+/*          stage("Quality Gate") {
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {
@@ -73,7 +73,7 @@ tools {
                 }
 
             }
-        }
+        }*/
 
         stage('Dependency Check') {
             when {
