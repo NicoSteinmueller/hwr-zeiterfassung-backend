@@ -1,6 +1,7 @@
 package com.hwr.hwrzeiterfassung.controller;
 
 import com.hwr.hwrzeiterfassung.database.controller.LoginController;
+import com.hwr.hwrzeiterfassung.database.controller.TimeController;
 import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
 import com.hwr.hwrzeiterfassung.database.repositorys.HumanRepository;
 import com.hwr.hwrzeiterfassung.database.repositorys.ProjectRepository;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "/book")
@@ -32,6 +35,8 @@ public class BookController {
 
     @Autowired
     private LoginController loginController;
+    @Autowired
+    private TimeController timeController;
 
     @PostMapping("/time")
     public ResponseEntity<HttpStatus> addTimeEntry(@RequestParam String email, @RequestParam String password,
@@ -69,6 +74,11 @@ public class BookController {
                 } else {
                     time.setEnd(datetime);
                     timeRepository.saveAndFlush(time);
+                    double workTime = (timeController.calculateEntriesTimeInMinutes(timeRepository.findAllByDayAndPause(day, false)) / (double) 60) - day.getTargetDailyWorkingTime();
+                    day.setWorkingTimeDifference(workTime);
+                    day.setPauseTime(calculatePauseTime(timeRepository.findAllByDayAndPause(day, false), timeRepository.findAllByDayAndPause(day, true)));
+                    correctPauseTime(day);
+                    dayRepository.saveAndFlush(day);
                     return new ResponseEntity<>(HttpStatus.ACCEPTED);
                 }
             }
@@ -80,4 +90,58 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "No Starttime for the Booking.");
         }
     }
+
+
+    public double calculatePauseTime(List<Time> workList, List<Time> pauseList) {
+        double pause = 0;
+        pause += timeController.calculateEntriesTimeInMinutes(pauseList);
+        pause += timeController.calculateTimeBetweenEntriesInMinutes(workList);
+        pause /= 60;
+        return pause;
+    }
+
+    public void correctPauseTime(Day day) {
+        double workTime = day.getTargetDailyWorkingTime();
+        double pauseTime = day.getPauseTime();
+        double minPause = 0;
+        if (workTime >= 10) {
+            minPause = Math.max(pauseTime, 1);
+        }
+        if (workTime >= 9) {
+            minPause = Math.max(pauseTime, (double) 45 / 60);
+        }
+        if (workTime >= 6) {
+            minPause = Math.max(pauseTime, (double) 30 / 60);
+        }
+
+        if (minPause > pauseTime) {
+            var timeList = timeRepository.findAllByDayAndPause(day, false);
+            var vipPause = minPause;
+            for (int i = timeList.size() - 1; i > 0; i--) {
+                var time = timeList.get(i);
+                double dur = Duration.between(time.getStart(), time.getEnd()).toSeconds();
+                dur /= 3600;
+
+                if (dur == vipPause) {
+                    time.setPause(true);
+                }
+                if (dur > vipPause) {
+                    var diff = (long) Math.ceil(dur - vipPause);
+                    var newEnd = time.getEnd().minusMinutes(diff);
+                    var timePause = new Time(newEnd, time.getEnd(), true, time.getNote(), time.getDay(), time.getProject());
+                    timeRepository.saveAndFlush(timePause);
+                    time.setEnd(newEnd);
+                    timeRepository.saveAndFlush(time);
+                }
+                if (dur < vipPause) {
+                    vipPause -= dur;
+                    time.setPause(true);
+                    timeRepository.saveAndFlush(time);
+                }
+            }
+            day.setPauseTime(minPause);
+        }
+    }
+
+
 }
