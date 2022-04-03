@@ -144,7 +144,6 @@ public class BookController {
 
 
 
-
     @GetMapping(path = "/isTimeStatusToBookStart")
     public @ResponseBody
     boolean isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password, @RequestParam boolean pause) {
