@@ -12,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class BookController {
     @Autowired
     private TimeController timeController;
 
-    @PostMapping("/time")
+    @PostMapping(path = "/time")
     public ResponseEntity<HttpStatus> addTimeEntry(@RequestParam String email, @RequestParam String password,
                                                    @RequestParam boolean isStart, @RequestParam boolean pause, @RequestParam String note, @RequestParam int projectId) {
 
@@ -144,4 +143,23 @@ public class BookController {
     }
 
 
+    @GetMapping(path = "/isTimeStatusToBookStart")
+    public @ResponseBody
+    boolean isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password, @RequestParam boolean pause) {
+        if (!loginController.validateLoginInformation(email, password))
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+
+        //TODO Sonderregel für Start am Vortag
+        var day = dayRepository.findAllByDateAndHuman_Email(LocalDate.now(), email);
+        if (day.isEmpty())
+            return true;
+
+        var times = timeRepository.findAllByDayAndPause(day.get(day.size() - 1), pause);
+        if (!times.isEmpty()) {
+            var time = times.get(times.size() - 1);
+            if (time.getEnd() == null)
+                return false;
+        }
+        return true;
+    }
 }
