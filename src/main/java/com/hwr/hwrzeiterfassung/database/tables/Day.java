@@ -21,14 +21,14 @@ public class Day {
     private long id;
 
     @Column(name = "target_daily_working_time", columnDefinition = "DOUBLE")
-    private double targetDailyWorkingTime;
+    private Double targetDailyWorkingTime;
     @Column(name = "day", nullable = false, columnDefinition = "DATE")
     private LocalDate date;
 
     @Column(name = "pause_time", columnDefinition = "DOUBLE")
-    private double pauseTime;
+    private Double pauseTime;
     @Column(name = "working_time_difference", columnDefinition = "DOUBLE")
-    private double workingTimeDifference;
+    private Double workingTimeDifference;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -39,7 +39,7 @@ public class Day {
     @JsonIgnore
     private Set<Time> time;
 
-    public Day(LocalDate date, double targetDailyWorkingTime, Human human) {
+    public Day(LocalDate date, Double targetDailyWorkingTime, Human human) {
         this.date = date;
         this.targetDailyWorkingTime = targetDailyWorkingTime;
         this.human = human;
