@@ -33,6 +33,8 @@ public class Human {
     @OneToMany(mappedBy = "supervisor")
     private Set<Human> subordinate;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Project defaultProject;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_name", referencedColumnName = "name")
