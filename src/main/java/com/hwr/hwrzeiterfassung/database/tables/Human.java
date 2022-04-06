@@ -24,7 +24,7 @@ public class Human {
     private String lastName;
 
     @Column(name = "target_daily_working_time", columnDefinition = "DOUBLE")
-    private double targetDailyWorkingTime;
+    private Double targetDailyWorkingTime;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "supervisor_email")
