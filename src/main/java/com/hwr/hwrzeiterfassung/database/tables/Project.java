@@ -28,6 +28,10 @@ public class Project {
     @JsonIgnore
     private Set<Time> time;
 
+    @OneToMany(mappedBy = "defaultProject")
+    @JsonIgnore
+    private Set<Human> defaultHumans;
+
     @ManyToMany(mappedBy = "projects")
     @JsonIgnore
     private Set<Human> humans;
