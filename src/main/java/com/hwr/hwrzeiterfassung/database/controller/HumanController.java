@@ -55,4 +55,13 @@ public class HumanController {
         return map;
     }
 
+    @GetMapping(path = "/getDefaultProject")
+    public @ResponseBody
+    Project getDefaultProject(@RequestParam String email, @RequestParam String password) {
+        if (!loginController.validateLoginInformation(email, password)) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        }
+        return humanRepository.findById(email).get().getDefaultProject();
+    }
+
 }
