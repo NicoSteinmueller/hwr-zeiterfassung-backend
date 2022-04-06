@@ -8,6 +8,7 @@ import com.hwr.hwrzeiterfassung.database.repositorys.ProjectRepository;
 import com.hwr.hwrzeiterfassung.database.repositorys.TimeRepository;
 import com.hwr.hwrzeiterfassung.database.tables.Day;
 import com.hwr.hwrzeiterfassung.database.tables.Time;
+import com.hwr.hwrzeiterfassung.response.models.TimeAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -143,23 +144,25 @@ public class BookController {
     }
 
 
-    @GetMapping(path = "/isTimeStatusToBookStart")
+    @GetMapping(path = "/lastTimeStatus")
     public @ResponseBody
-    boolean isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password, @RequestParam boolean pause) {
+    TimeAction isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password, @RequestParam boolean pause) {
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+
 
         //TODO Sonderregel für Start am Vortag
         var day = dayRepository.findAllByDateAndHuman_Email(LocalDate.now(), email);
         if (day.isEmpty())
-            return true;
+            return null;
 
         var times = timeRepository.findAllByDayAndPause(day.get(day.size() - 1), pause);
-        if (!times.isEmpty()) {
-            var time = times.get(times.size() - 1);
-            if (time.getEnd() == null)
-                return false;
+        if (times.isEmpty()) {
+            return null;
         }
-        return true;
+        var time = times.get(times.size() - 1);
+        if (time.getEnd() == null)
+            return new TimeAction(false, time.isPause(), time.getProject().getId());
+        return new TimeAction(true, time.isPause(), time.getProject().getId());
     }
 }
