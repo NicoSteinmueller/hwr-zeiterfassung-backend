@@ -9,6 +9,6 @@ import java.time.LocalDate;
 @Data
 public class DayOverviewCompact {
     private LocalDate date;
-    private double pause;
-    private double workTime;
+    private Double pause;
+    private Double workTime;
 }

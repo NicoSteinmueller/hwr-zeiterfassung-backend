@@ -12,6 +12,6 @@ public class DayOverviewFull {
     private LocalDate date;
     private LocalDateTime start;
     private LocalDateTime end;
-    private double pause;
-    private double workTime;
+    private Double pause;
+    private Double workTime;
 }

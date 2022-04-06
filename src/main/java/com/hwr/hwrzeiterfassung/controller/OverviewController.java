@@ -1,5 +1,6 @@
 package com.hwr.hwrzeiterfassung.controller;
 
+import com.hwr.hwrzeiterfassung.database.controller.DayController;
 import com.hwr.hwrzeiterfassung.database.controller.LoginController;
 import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
 import com.hwr.hwrzeiterfassung.database.repositorys.TimeRepository;
@@ -29,6 +30,8 @@ public class OverviewController {
     private DayRepository dayRepository;
     @Autowired
     private TimeRepository timeRepository;
+    @Autowired
+    private DayController dayController;
 
     @GetMapping(path = "/DayFullOverviewInInterval")
     public @ResponseBody
@@ -44,17 +47,26 @@ public class OverviewController {
         var list = new ArrayList<DayOverviewFull>();
         for (var day : days) {
             var times = timeRepository.findAllByDay(day);
-            LocalDateTime dayStart = times.get(0).getStart();
-            LocalDateTime dayEnd = times.get(0).getEnd();
+            var workingTime = dayController.calculateWorkingTime(day);
+            if (times.isEmpty()) {
+                list.add(new DayOverviewFull(day.getDate(), null, null, day.getPauseTime(), workingTime));
+                continue;
+            }
 
-            for (int i = 1; i < times.size(); i++) {
+            LocalDateTime dayStart = LocalDateTime.MAX;
+            LocalDateTime dayEnd = LocalDateTime.MIN;
+
+            for (int i = 0; i < times.size(); i++) {
                 var time = times.get(i);
-                if (dayStart.isAfter(time.getStart()))
+                if (time.getStart() != null && dayStart.isAfter(time.getStart()))
                     dayStart = time.getStart();
-                if (dayEnd.isBefore(time.getEnd()))
+                if (time.getEnd() != null && dayEnd.isBefore(time.getEnd()))
                     dayEnd = time.getEnd();
             }
-            var workingTime = day.getTargetDailyWorkingTime() + day.getWorkingTimeDifference();
+            if (dayStart == LocalDateTime.MAX)
+                dayStart = null;
+            if (dayEnd == LocalDateTime.MIN)
+                dayEnd = null;
             list.add(new DayOverviewFull(day.getDate(), dayStart, dayEnd, day.getPauseTime(), workingTime));
 
         }
@@ -75,7 +87,7 @@ public class OverviewController {
 
         var list = new ArrayList<DayOverviewCompact>();
         for (var day : days) {
-            var workingTime = day.getTargetDailyWorkingTime() + day.getWorkingTimeDifference();
+            var workingTime = dayController.calculateWorkingTime(day);
             list.add(new DayOverviewCompact(day.getDate(), day.getPauseTime(), workingTime));
 
         }
