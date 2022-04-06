@@ -6,6 +6,7 @@ import com.hwr.hwrzeiterfassung.database.repositorys.TimeRepository;
 import com.hwr.hwrzeiterfassung.response.models.DayOverviewCompact;
 import com.hwr.hwrzeiterfassung.response.models.DayOverviewFull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class OverviewController {
 
     @GetMapping(path = "/DayFullOverviewInInterval")
     public @ResponseBody
-    Iterable<DayOverviewFull> getDayFullOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam LocalDate start, @RequestParam LocalDate end) {
+    Iterable<DayOverviewFull> getDayFullOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
 
@@ -62,7 +63,7 @@ public class OverviewController {
 
     @GetMapping(path = "/DayCompactOverviewInInterval")
     public @ResponseBody
-    Iterable<DayOverviewCompact> getDayCompactOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam LocalDate start, @RequestParam LocalDate end) {
+    Iterable<DayOverviewCompact> getDayCompactOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
@@ -83,7 +84,7 @@ public class OverviewController {
 
     @GetMapping(path = "/AverageWorkingHoursInInterval")
     public @ResponseBody
-    double getAverageWorkingHoursInInterval(@RequestParam String email, @RequestParam String password, @RequestParam LocalDate start, @RequestParam LocalDate end) {
+    double getAverageWorkingHoursInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
