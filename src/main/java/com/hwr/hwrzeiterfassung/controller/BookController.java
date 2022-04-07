@@ -146,7 +146,7 @@ public class BookController {
 
     @GetMapping(path = "/lastTimeStatus")
     public @ResponseBody
-    TimeAction isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password, @RequestParam boolean pause) {
+    TimeAction isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password) {
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
 
@@ -156,7 +156,7 @@ public class BookController {
         if (day.isEmpty())
             return null;
 
-        var times = timeRepository.findAllByDayAndPause(day.get(day.size() - 1), pause);
+        var times = timeRepository.findAllByDay(day.get(day.size() - 1));
         if (times.isEmpty()) {
             return null;
         }
