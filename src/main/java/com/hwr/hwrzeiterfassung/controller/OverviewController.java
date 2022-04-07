@@ -110,12 +110,12 @@ public class OverviewController {
 
     @GetMapping(path = "/AveragePauseInInterval")
     public @ResponseBody
-    double getAveragePauseInInterval(@RequestParam String email, @RequestParam String password) {
+    double getAveragePauseInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
         if (!loginController.validateLoginInformation(email, password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
 
-        Optional<Double> hours = dayRepository.getPauseAverageByDateBetweenAndHuman_Email(LocalDate.now().minusDays(10), LocalDate.now(), email);
+        Optional<Double> hours = dayRepository.getPauseAverageByDateBetweenAndHuman_Email(start, end, email);
         if (hours.isEmpty())
             return 0;
         return hours.get();
