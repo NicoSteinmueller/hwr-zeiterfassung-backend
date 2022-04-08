@@ -36,8 +36,7 @@ public class OverviewController {
     @GetMapping(path = "/DayFullOverviewInInterval")
     public @ResponseBody
     Iterable<DayOverviewFull> getDayFullOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
         var days = dayRepository.findAllByDateBetweenAndHuman_Email(start, end, email);
 
@@ -77,8 +76,7 @@ public class OverviewController {
     public @ResponseBody
     Iterable<DayOverviewCompact> getDayCompactOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
         var days = dayRepository.findAllByDateBetweenAndHuman_Email(start, end, email);
 
@@ -98,8 +96,7 @@ public class OverviewController {
     public @ResponseBody
     double getAverageWorkingHoursInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
         Optional<Double> hours = dayRepository.getWorkingTimeAverageByDateBetweenAndHuman_Email(start, end, email);
 
@@ -112,8 +109,7 @@ public class OverviewController {
     public @ResponseBody
     double getAveragePauseInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
 
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
         Optional<Double> hours = dayRepository.getPauseAverageByDateBetweenAndHuman_Email(start, end, email);
         if (hours.isEmpty())

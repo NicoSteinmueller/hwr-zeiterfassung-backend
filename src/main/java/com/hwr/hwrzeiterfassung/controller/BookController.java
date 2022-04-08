@@ -42,8 +42,7 @@ public class BookController {
     public ResponseEntity<HttpStatus> addTimeEntry(@RequestParam String email, @RequestParam String password,
                                                    @RequestParam boolean isStart, @RequestParam boolean pause, @RequestParam String note, @RequestParam int projectId) {
 
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
         var datetime = LocalDateTime.now();
 
@@ -147,8 +146,7 @@ public class BookController {
     @GetMapping(path = "/lastTimeStatus")
     public @ResponseBody
     TimeAction isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password) {
-        if (!loginController.validateLoginInformation(email, password))
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+        loginController.validateLoginInformation(email, password);
 
 
         //TODO Sonderregel für Start am Vortag
