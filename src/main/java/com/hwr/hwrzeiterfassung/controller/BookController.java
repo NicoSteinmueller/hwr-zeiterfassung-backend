@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "/book")
@@ -145,22 +146,22 @@ public class BookController {
 
     @GetMapping(path = "/lastTimeStatus")
     public @ResponseBody
-    TimeAction isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password) {
+    Optional<TimeAction> isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password) {
         loginController.validateLoginInformation(email, password);
 
 
         //TODO Sonderregel für Start am Vortag
         var day = dayRepository.findAllByDateAndHuman_Email(LocalDate.now(), email);
         if (day.isEmpty())
-            return null;
+            return Optional.empty();
 
         var times = timeRepository.findAllByDay(day.get(day.size() - 1));
         if (times.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         var time = times.get(times.size() - 1);
         if (time.getEnd() == null)
-            return new TimeAction(false, time.isPause(), time.getProject().getId());
-        return new TimeAction(true, time.isPause(), time.getProject().getId());
+            return Optional.of(new TimeAction(false, time.isPause(), time.getProject().getId()));
+        return Optional.of(new TimeAction(true, time.isPause(), time.getProject().getId()));
     }
 }
