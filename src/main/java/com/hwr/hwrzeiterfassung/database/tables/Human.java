@@ -3,6 +3,7 @@ package com.hwr.hwrzeiterfassung.database.tables;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name = "human")
 public class Human {
     @Id
@@ -36,7 +38,7 @@ public class Human {
     @ManyToOne(cascade = CascadeType.ALL)
     private Project defaultProject;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_name", referencedColumnName = "name")
     private Role role;
 

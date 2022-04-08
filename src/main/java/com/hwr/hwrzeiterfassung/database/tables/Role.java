@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class Role {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "role")
+    @OneToMany(mappedBy = "role")
     @JsonIgnore
-    private Human human;
+    private List<Human> humans;
 }
