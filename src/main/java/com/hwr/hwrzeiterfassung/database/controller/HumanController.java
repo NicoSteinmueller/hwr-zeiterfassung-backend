@@ -26,9 +26,8 @@ public class HumanController {
     public @ResponseBody
     Iterable<Project> getProjectsWithUserAccess(@RequestParam String email, @RequestParam String password) {
 
-        if (!loginController.validateLoginInformation(email, password)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
-        }
+        loginController.validateLoginInformation(email, password);
+
         var human = humanRepository.findById(email);
         if (human.isPresent()) {
             return human.get().getProjects();
@@ -40,9 +39,7 @@ public class HumanController {
     public @ResponseBody
     Map<String, String> getHumanName(@RequestParam String email, @RequestParam String password) {
 
-        if (!loginController.validateLoginInformation(email, password)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
-        }
+        loginController.validateLoginInformation(email, password);
 
         var human = humanRepository.findById(email);
         if (human.isEmpty()) {
@@ -58,9 +55,8 @@ public class HumanController {
     @GetMapping(path = "/getDefaultProject")
     public @ResponseBody
     Project getDefaultProject(@RequestParam String email, @RequestParam String password) {
-        if (!loginController.validateLoginInformation(email, password)) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
-        }
+        loginController.validateLoginInformation(email, password);
+
         return humanRepository.findById(email).get().getDefaultProject();
     }
 

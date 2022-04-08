@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -20,7 +21,8 @@ public class LoginController {
 
     @PostMapping("/basicLogin")
     public ResponseEntity<HttpStatus> basicLogin(@RequestParam String email, @RequestParam String password) {
-        if (validateLoginInformation(email, password)) {
+        Optional<Login> login = loginRepository.findById(email);
+        if (login.isPresent() && login.get().getPassword().equals(password)) {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -28,13 +30,11 @@ public class LoginController {
     }
 
 
-    public boolean validateLoginInformation(String email, String password) {
+    public void validateLoginInformation(String email, String password) {
         Optional<Login> login = loginRepository.findById(email);
-        if (login.isEmpty()) {
-            return false;
-        } else {
-            return login.get().getPassword().equals(password);
-        }
+        if (login.isEmpty() || !login.get().getPassword().equals(password))
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
+
 
     }
 }
