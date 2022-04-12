@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    #ToDo Remove before commit
+    url: jdbc:mysql://192.168.178.50:3306/hwr-zeiterfassung-test
+    username: HWR-Zeiterfassung
+    password: (datasource_password)
+    driver-class-name: com.mysql.cj.jdbc.Driver
