@@ -24,6 +24,7 @@ tools {
                 sh "mvn --version"
                 sh "mvn clean"
                 sh "sed -i 's/(datasource_password)/${passwd}/g' src/main/resources/application.yml"
+                sh "sed -i 's/(datasource_password)/${passwd}/g' src/test/java/resources/application-test.yml"
             }
             }
         }
