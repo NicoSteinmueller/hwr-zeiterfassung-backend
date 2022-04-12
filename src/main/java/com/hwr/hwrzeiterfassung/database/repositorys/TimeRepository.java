@@ -10,4 +10,6 @@ public interface TimeRepository extends JpaRepository<Time, Integer> {
     List<Time> findAllByDayAndPause(Day day, boolean pause);
 
     List<Time> findAllByDay(Day day);
+
+    void deleteAllByDay(Day day);
 }
