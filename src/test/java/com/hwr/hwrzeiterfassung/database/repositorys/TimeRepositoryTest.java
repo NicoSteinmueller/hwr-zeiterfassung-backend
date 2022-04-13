@@ -4,7 +4,6 @@ import com.hwr.hwrzeiterfassung.database.tables.Day;
 import com.hwr.hwrzeiterfassung.database.tables.Human;
 import com.hwr.hwrzeiterfassung.database.tables.Project;
 import com.hwr.hwrzeiterfassung.database.tables.Time;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
@@ -21,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TimeRepositoryTest {
     @Autowired
     TimeRepository timeRepository;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void findAllByDayAndPause() {
