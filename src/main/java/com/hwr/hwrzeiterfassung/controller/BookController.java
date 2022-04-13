@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ public class BookController {
         }
         var day = dayList.get(dayList.size() - 1);
 
-        //TODO Sonderregel für Start am Vortag hinzufügen
+
         var times = timeRepository.findAllByDayAndPause(day, pause);
         if (!times.isEmpty()) {
             var time = times.get(times.size() - 1);
@@ -87,6 +88,23 @@ public class BookController {
             timeRepository.saveAndFlush(new Time(datetime, null, pause, note, day, project.get()));
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
+            //Tagesübergangsbuchung Regelung
+            var lastDays = dayRepository.findAllByDateAndHuman_Email(datetime.minusDays(1).toLocalDate(), email);
+
+            if (!lastDays.isEmpty()) {
+                var lastTimes = timeRepository.findAllByDay(lastDays.get(0));
+                if (!lastTimes.isEmpty()) {
+                    var lastTime = lastTimes.get(lastDays.size() - 1);
+                    if (lastTime.getEnd() == null) {
+                        lastTime.setEnd(LocalDateTime.of(lastDays.get(0).getDate(), LocalTime.MAX));
+                        timeRepository.saveAndFlush(lastTime);
+
+                        timeRepository.saveAndFlush(new Time(LocalDateTime.of(day.getDate(), LocalTime.MIDNIGHT), datetime, pause, note, day, project.get()));
+                        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+                    }
+                }
+            }
+
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "No Starttime for the Booking.");
         }
     }
@@ -150,13 +168,26 @@ public class BookController {
         loginController.validateLoginInformation(email, password);
 
 
-        //TODO Sonderregel für Start am Vortag
         var day = dayRepository.findAllByDateAndHuman_Email(LocalDate.now(), email);
         if (day.isEmpty())
             return Optional.empty();
 
         var times = timeRepository.findAllByDay(day.get(day.size() - 1));
         if (times.isEmpty()) {
+            //TODO Sonderregel für Start am Vortag
+            var lastDays = dayRepository.findAllByDateAndHuman_Email(LocalDate.now().minusDays(1), email);
+            if (lastDays.isEmpty())
+                return Optional.empty();
+
+            var lastTimes = timeRepository.findAllByDay(day.get(day.size() - 1));
+
+            if (lastTimes.isEmpty())
+                return Optional.empty();
+
+            var lastTime = lastTimes.get(lastTimes.size() - 1);
+            if (lastTime.getEnd() == null)
+                return Optional.of(new TimeAction(false, lastTime.isPause(), lastTime.getProject().getId()));
+
             return Optional.empty();
         }
         var time = times.get(times.size() - 1);
