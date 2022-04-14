@@ -78,4 +78,28 @@ class TimeRepositoryTest {
         assertThat(test).hasSize(2);
         assertEquals(pause, test.get(1));
     }
+
+    @Test
+    void deleteAllByDay() {
+        LocalDate date = LocalDate.of(2022, 4, 1);
+        Human testHuman = new Human();
+        testHuman.setEmail("test");
+        testHuman.setFirstName("Tester");
+        testHuman.setLastName(("von Test"));
+        Day testDay = new Day(date, 8.0, testHuman);
+        LocalDateTime start = LocalDateTime.of(2022, 4, 1, 8, 0);
+        LocalDateTime end = LocalDateTime.of(2022, 4, 1, 12, 0);
+        Project project = new Project();
+        project.setName("testProject");
+        Time time = new Time(start, end, false, "", testDay, project);
+        LocalDateTime pauseEnd = LocalDateTime.of(2022, 4, 1, 12, 30);
+        Time pause = new Time(end, pauseEnd, true, "", testDay, project);
+        timeRepository.saveAndFlush(time);
+        timeRepository.saveAndFlush(pause);
+
+        timeRepository.deleteAllByDay(testDay);
+
+        var test = timeRepository.findAllByDay(testDay);
+        assertThat(test).isEmpty();
+    }
 }
