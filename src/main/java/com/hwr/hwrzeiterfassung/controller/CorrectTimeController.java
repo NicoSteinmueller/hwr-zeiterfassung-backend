@@ -34,8 +34,6 @@ public class CorrectTimeController {
     @Autowired
     private TimeRepository timeRepository;
     @Autowired
-    private BookController bookController;
-    @Autowired
     private TimeController timeController;
 
     /**
@@ -47,7 +45,7 @@ public class CorrectTimeController {
      * @return Optional of DayAndListOfTimes
      */
     @GetMapping(path = "/getDayInformationAndTimes")
-    public Optional<DayAndListOfTimes> getDayInformationAndTimes(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public @ResponseBody Optional<DayAndListOfTimes> getDayInformationAndTimes(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         loginController.validateLoginInformation(email, password);
         var days = dayRepository.findAllByDateAndHuman_Email(date, email);
 
@@ -83,10 +81,7 @@ public class CorrectTimeController {
     HttpStatus changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
         loginController.validateLoginInformation(email, password);
 
-        var date = dateAndListOfTimes.getDate();
-        var timesInput = dateAndListOfTimes.getTimes();
-
-        var days = dayRepository.findAllByDateAndHuman_Email(date, email);
+        var days = dayRepository.findAllByDateAndHuman_Email(dateAndListOfTimes.getDate(), email);
         Day day;
         if (days.isEmpty())
             day = new Day();
@@ -95,24 +90,19 @@ public class CorrectTimeController {
 
         day.setTargetDailyWorkingTime(targetDailyWorkingTime);
 
-        List<Time> timesWork = new ArrayList<>();
-        List<Time> timesPause = new ArrayList<>();
+        List<Time> times = new ArrayList<>();
+        for (var timeInput : dateAndListOfTimes.getTimes())
+            times.add(new Time(timeInput.getStart(), timeInput.getEnd(), timeInput.isPause(), timeInput.getNote(), day, timeInput.getProject()));
 
-        for (var timeInput : timesInput) {
-            if (timeInput.isPause())
-                timesPause.add(new Time(timeInput.getStart(), timeInput.getEnd(), timeInput.isPause(), timeInput.getNote(), day, timeInput.getProject()));
-            else
-                timesWork.add(new Time(timeInput.getStart(), timeInput.getEnd(), timeInput.isPause(), timeInput.getNote(), day, timeInput.getProject()));
-        }
-        day.setPauseTime(bookController.calculatePauseTime(timesWork, timesPause));
-        day.setWorkingTimeDifference((timeController.calculateEntriesTimeInMinutes(timesWork) / (double) 60) - day.getTargetDailyWorkingTime());
         dayRepository.saveAndFlush(day);
         timeRepository.deleteAllByDay(day);
-        timeRepository.saveAllAndFlush(timesWork);
-        timeRepository.saveAllAndFlush(timesPause);
+        timeRepository.saveAllAndFlush(times);
 
+        day.setPauseTime(timeController.calculatePauseTime(day));
+        var workTime = timeController.calculateEntriesTimeInMinutes(timeRepository.findAllByDayAndPause(day, false)) / (double) 60;
+        day.setWorkingTimeDifference(workTime - day.getTargetDailyWorkingTime());
+        dayRepository.saveAndFlush(day);
         return HttpStatus.ACCEPTED;
     }
-
 
 }
