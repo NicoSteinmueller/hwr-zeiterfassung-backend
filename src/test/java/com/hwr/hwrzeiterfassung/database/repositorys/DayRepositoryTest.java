@@ -10,14 +10,23 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * The type Day repository test.
+ */
 @DataJpaTest
 @AutoConfigureTestEntityManager
 class DayRepositoryTest {
+    /**
+     * The Day repository.
+     */
     @Autowired
     DayRepository dayRepository;
 
+    /**
+     * Find all by date and human email.
+     */
     @Test
     void findAllByDateAndHuman_Email() {
         LocalDate date = LocalDate.of(2022, 4, 1);
@@ -34,6 +43,9 @@ class DayRepositoryTest {
         assertEquals(testDay, test.get(0));
     }
 
+    /**
+     * Find all by date between and human email.
+     */
     @Test
     void findAllByDateBetweenAndHuman_Email() {
         LocalDate date1 = LocalDate.of(2022, 4, 1);
@@ -53,6 +65,9 @@ class DayRepositoryTest {
         assertEquals(testDay2, test.get(1));
     }
 
+    /**
+     * Gets working time average by date between and human email.
+     */
     @Test
     void getWorkingTimeAverageByDateBetweenAndHuman_Email() {
         LocalDate date1 = LocalDate.of(2022, 4, 1);
@@ -74,6 +89,9 @@ class DayRepositoryTest {
         assertThat(test).hasValue(8.25);
     }
 
+    /**
+     * Gets pause average by date between and human email.
+     */
     @Test
     void getPauseAverageByDateBetweenAndHuman_Email() {
         LocalDate date1 = LocalDate.of(2022, 4, 1);

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * controller for update data
+ */
 @Controller
 @RequestMapping(path = "/update")
 public class UpdateController {
@@ -25,6 +28,14 @@ public class UpdateController {
     @Autowired
     private ProjectRepository projectRepository;
 
+    /**
+     * change the password of the human
+     *
+     * @param email       email for Login validation
+     * @param password    hashed password for Login validation
+     * @param newPassword hashed new password
+     * @return HttpStatus Accepted or Not_Acceptable
+     */
     @PostMapping(path = "/password")
     public @ResponseStatus
     HttpStatus changePassword(@RequestParam String email, @RequestParam String password, @RequestParam String newPassword) {
@@ -37,6 +48,14 @@ public class UpdateController {
         return HttpStatus.ACCEPTED;
     }
 
+    /**
+     * change the last name of the human
+     *
+     * @param email       email for login validation
+     * @param password    hashed password for login validation
+     * @param newLastName new last name for the human
+     * @return HttpStatus Accepted or Not_Acceptable
+     */
     @PostMapping(path = "/lastName")
     public @ResponseStatus
     HttpStatus changelastName(@RequestParam String email, @RequestParam String password, @RequestParam String newLastName) {
@@ -47,6 +66,14 @@ public class UpdateController {
         return HttpStatus.ACCEPTED;
     }
 
+    /**
+     * change the target daily working time of the human
+     *
+     * @param email                  email for login validation
+     * @param password               hashed password for login validation
+     * @param targetDailyWorkingTime new target working time for the human
+     * @return HttpStatus Accepted or Not_Acceptable
+     */
     @PostMapping(path = "/targetDailyWorkingTime")
     public @ResponseStatus
     HttpStatus changetargetDailyWorkingTime(@RequestParam String email, @RequestParam String password, @RequestParam double targetDailyWorkingTime) {
@@ -57,6 +84,14 @@ public class UpdateController {
         return HttpStatus.ACCEPTED;
     }
 
+    /**
+     * change the default project of the human
+     *
+     * @param email     email for login validation
+     * @param password  hashed password for login validation
+     * @param projectId new default project for the human
+     * @return HttpStatus Accepted or Not_Acceptable
+     */
     @PostMapping(path = "/defaultProjectId")
     public @ResponseStatus
     HttpStatus changedefaultProjectId(@RequestParam String email, @RequestParam String password, @RequestParam int projectId) {

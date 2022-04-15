@@ -1,40 +1,37 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
+/**
+ * this entity is for all data of a project
+ */
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table
 public class Project {
+    /**
+     * the id for clearly identify on time in the DB
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column
     private int id;
 
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(256)")
+    /**
+     * the name of the project
+     */
+    @Column(nullable = false, columnDefinition = "VARCHAR(256)")
     private String name;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    /**
+     * a detailed description of the project
+     */
+    @Column(columnDefinition = "TEXT")
     private String description;
-
-
-    @OneToMany(mappedBy = "project")
-    @JsonIgnore
-    private Set<Time> time;
-
-    @OneToMany(mappedBy = "defaultProject")
-    @JsonIgnore
-    private Set<Human> defaultHumans;
-
-    @ManyToMany(mappedBy = "projects")
-    @JsonIgnore
-    private Set<Human> humans;
 }

@@ -21,6 +21,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * Controller for the Overview over the day and this times
+ */
 @Controller
 @RequestMapping(path = "/overview")
 public class OverviewController {
@@ -33,6 +36,15 @@ public class OverviewController {
     @Autowired
     private DayController dayController;
 
+    /**
+     * Complete Overview over the days in the requested period
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @param start    start date of the period
+     * @param end      end date of the period
+     * @return Iterable of Day Overview Full
+     */
     @GetMapping(path = "/DayFullOverviewInInterval")
     public @ResponseBody
     Iterable<DayOverviewFull> getDayFullOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
@@ -72,6 +84,15 @@ public class OverviewController {
         return list;
     }
 
+    /**
+     * compact Overview over the days in the requested period
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @param start    start date for the period
+     * @param end      end date for the period
+     * @return Iterable of Day Compact Overview
+     */
     @GetMapping(path = "/DayCompactOverviewInInterval")
     public @ResponseBody
     Iterable<DayOverviewCompact> getDayCompactOverviewsInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
@@ -92,6 +113,15 @@ public class OverviewController {
         return list;
     }
 
+    /**
+     * average working Hours for the days in the requested period
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @param start    start date for the period
+     * @param end      end date for the period
+     * @return average working hours
+     */
     @GetMapping(path = "/AverageWorkingHoursInInterval")
     public @ResponseBody
     double getAverageWorkingHoursInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
@@ -105,6 +135,15 @@ public class OverviewController {
         return hours.get();
     }
 
+    /**
+     * average pause for the days in the requested period
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @param start    start date for the period
+     * @param end      end date for the period
+     * @return average pause
+     */
     @GetMapping(path = "/AveragePauseInInterval")
     public @ResponseBody
     double getAveragePauseInInterval(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end) {
