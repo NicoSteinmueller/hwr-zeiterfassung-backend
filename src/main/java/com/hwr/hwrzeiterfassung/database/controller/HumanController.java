@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller for the human
+ */
 @Controller
 @RequestMapping(path = "/human")
 public class HumanController {
@@ -22,6 +25,13 @@ public class HumanController {
     @Autowired
     private LoginController loginController;
 
+    /**
+     * get all project, for them the human has access
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @return Iterable of projects
+     */
     @GetMapping(path = "/getAllProjects")
     public @ResponseBody
     Iterable<Project> getProjectsWithUserAccess(@RequestParam String email, @RequestParam String password) {
@@ -35,6 +45,13 @@ public class HumanController {
         return (Iterable<Project>) new Project();
     }
 
+    /**
+     * request the name of the human
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @return first and last name as map
+     */
     @GetMapping(path = "/name")
     public @ResponseBody
     Map<String, String> getHumanName(@RequestParam String email, @RequestParam String password) {
@@ -52,6 +69,13 @@ public class HumanController {
         return map;
     }
 
+    /**
+     * request the default project from the human
+     *
+     * @param email    email for Login validation
+     * @param password hashed password for Login validation
+     * @return default project
+     */
     @GetMapping(path = "/getDefaultProject")
     public @ResponseBody
     Project getDefaultProject(@RequestParam String email, @RequestParam String password) {

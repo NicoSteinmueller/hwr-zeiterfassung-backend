@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+/**
+ * The type Day overview compact.
+ */
 @AllArgsConstructor
 @Data
 public class DayOverviewCompact {

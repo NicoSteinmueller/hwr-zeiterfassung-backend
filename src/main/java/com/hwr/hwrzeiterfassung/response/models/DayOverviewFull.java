@@ -6,6 +6,9 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * The type Day overview full.
+ */
 @AllArgsConstructor
 @Data
 public class DayOverviewFull {

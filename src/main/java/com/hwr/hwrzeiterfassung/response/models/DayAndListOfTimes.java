@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * The type Day and list of times.
+ */
 @AllArgsConstructor
 @Data
 public class DayAndListOfTimes {

@@ -6,9 +6,17 @@ import org.springframework.stereotype.Controller;
 import java.time.Duration;
 import java.util.List;
 
+/**
+ * Controller for the Times
+ */
 @Controller
 public class TimeController {
-
+    /**
+     * calculate the duration of the times in a list
+     *
+     * @param list List of Times
+     * @return duration of the times
+     */
     public long calculateEntriesTimeInMinutes(List<Time> list) {
         long completeTime = 0;
         for (Time time : list)
@@ -16,6 +24,12 @@ public class TimeController {
         return completeTime;
     }
 
+    /**
+     * calculate the duration between the times in a list
+     *
+     * @param list List of Times
+     * @return duration between the times
+     */
     public long calculateTimeBetweenEntriesInMinutes(List<Time> list) {
         long completeTime = 0;
         for (int i = 1; i < list.size(); i++)

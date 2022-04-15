@@ -6,22 +6,33 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/**
+ * this Entity is for the Login information of a Human
+ */
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table
 public class Login {
+    /**
+     * the email for the login
+     */
     @Id
-    @Column(name = "email")
+    @Column
     private String email;
 
-    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
+    /**
+     * the password for the Login saved as a Hash
+     */
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String password;
 
-
+    /**
+     * link the email from the login to a human
+     */
     @OneToOne
     @MapsId
-    @JoinColumn(name = "human_email", columnDefinition = "VARCHAR(320)")
+    @JoinColumn(columnDefinition = "VARCHAR(320)")
     private Human human;
 }

@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * The type Time compact.
+ */
 @AllArgsConstructor
 @Data
 public class TimeCompact {

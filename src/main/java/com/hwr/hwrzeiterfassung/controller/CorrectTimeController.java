@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for correct times
+ */
 @Controller
 @RequestMapping(path = "/correct")
 public class CorrectTimeController {
@@ -35,7 +38,14 @@ public class CorrectTimeController {
     @Autowired
     private TimeController timeController;
 
-
+    /**
+     * get the information's and times of a day
+     *
+     * @param email    email for login validation
+     * @param password hashed password for login validation
+     * @param date     the date from the day
+     * @return Optional of DayAndListOfTimes
+     */
     @GetMapping(path = "/getDayInformationAndTimes")
     public Optional<DayAndListOfTimes> getDayInformationAndTimes(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         loginController.validateLoginInformation(email, password);
@@ -59,7 +69,15 @@ public class CorrectTimeController {
         return Optional.of(new DayAndListOfTimes(dayOverviewCompact, timeCompactList));
     }
 
-
+    /**
+     * change the times of a day
+     *
+     * @param email                  email for login validation
+     * @param password               hashed password for login validation
+     * @param dateAndListOfTimes     the date of the day and a list of the new times for the day
+     * @param targetDailyWorkingTime the target working time for this day
+     * @return HttpStatus Accepted or Not_Acceptable
+     */
     @PostMapping(path = "/times")
     public @ResponseStatus
     HttpStatus changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
