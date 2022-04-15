@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table
 public class Time {
     /**
-     * the id for clearly identify one time in the DB
+     * the id to* clearly identify one time in the DB
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,7 +31,7 @@ public class Time {
     private LocalDateTime start;
 
     /**
-     * the ent-time for the time
+     * the end-time for the time
      */
     @Column(columnDefinition = "datetime")
     private LocalDateTime end;
@@ -66,7 +66,7 @@ public class Time {
      * constructor for the time Entity
      *
      * @param start   the start-time for the time
-     * @param end     the ent-time for the time
+     * @param end     the end-time for the time
      * @param pause   if the time is a pause / break
      * @param note    a note for the time
      * @param day     links the time to a day, with a link to human

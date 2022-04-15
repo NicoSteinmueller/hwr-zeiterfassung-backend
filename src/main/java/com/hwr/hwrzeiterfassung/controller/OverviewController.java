@@ -1,9 +1,7 @@
 package com.hwr.hwrzeiterfassung.controller;
 
-import com.hwr.hwrzeiterfassung.database.controller.DayController;
 import com.hwr.hwrzeiterfassung.database.controller.LoginController;
 import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
-import com.hwr.hwrzeiterfassung.database.repositorys.TimeRepository;
 import com.hwr.hwrzeiterfassung.response.models.DayOverviewCompact;
 import com.hwr.hwrzeiterfassung.response.models.DayOverviewFull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -31,10 +28,6 @@ public class OverviewController {
     private LoginController loginController;
     @Autowired
     private DayRepository dayRepository;
-    @Autowired
-    private TimeRepository timeRepository;
-    @Autowired
-    private DayController dayController;
 
     /**
      * Complete Overview over the days in the requested period
@@ -56,31 +49,9 @@ public class OverviewController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No days found for the user in the interval");
 
         var list = new ArrayList<DayOverviewFull>();
-        for (var day : days) {
-            var times = timeRepository.findAllByDay(day);
-            var workingTime = dayController.calculateWorkingTime(day);
-            if (times.isEmpty()) {
-                list.add(new DayOverviewFull(day.getDate(), null, null, day.getPauseTime(), workingTime));
-                continue;
-            }
+        for (var day : days)
+            list.add(day.getDayOverviewFull());
 
-            LocalDateTime dayStart = LocalDateTime.MAX;
-            LocalDateTime dayEnd = LocalDateTime.MIN;
-
-            for (int i = 0; i < times.size(); i++) {
-                var time = times.get(i);
-                if (time.getStart() != null && dayStart.isAfter(time.getStart()))
-                    dayStart = time.getStart();
-                if (time.getEnd() != null && dayEnd.isBefore(time.getEnd()))
-                    dayEnd = time.getEnd();
-            }
-            if (dayStart == LocalDateTime.MAX)
-                dayStart = null;
-            if (dayEnd == LocalDateTime.MIN)
-                dayEnd = null;
-            list.add(new DayOverviewFull(day.getDate(), dayStart, dayEnd, day.getPauseTime(), workingTime));
-
-        }
         return list;
     }
 
@@ -106,9 +77,8 @@ public class OverviewController {
 
         var list = new ArrayList<DayOverviewCompact>();
         for (var day : days) {
-            var workingTime = dayController.calculateWorkingTime(day);
+            var workingTime = day.calculateWorkingTime();
             list.add(new DayOverviewCompact(day.getDate(), day.getPauseTime(), workingTime));
-
         }
         return list;
     }

@@ -1,6 +1,7 @@
 package com.hwr.hwrzeiterfassung.database.controller;
 
 import com.hwr.hwrzeiterfassung.database.repositorys.HumanRepository;
+import com.hwr.hwrzeiterfassung.database.tables.Human;
 import com.hwr.hwrzeiterfassung.database.tables.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ import java.util.Map;
 @RequestMapping(path = "/human")
 public class HumanController {
     @Autowired
-    private HumanRepository humanRepository;
-    @Autowired
     private LoginController loginController;
+    @Autowired
+    private HumanRepository humanRepository;
 
     /**
      * get all project, for them the human has access
@@ -35,14 +36,10 @@ public class HumanController {
     @GetMapping(path = "/getAllProjects")
     public @ResponseBody
     Iterable<Project> getProjectsWithUserAccess(@RequestParam String email, @RequestParam String password) {
-
         loginController.validateLoginInformation(email, password);
 
-        var human = humanRepository.findById(email);
-        if (human.isPresent()) {
-            return human.get().getProjects();
-        }
-        return (Iterable<Project>) new Project();
+        var human = getHumanByEmail(email);
+        return human.getProjects();
     }
 
     /**
@@ -55,17 +52,13 @@ public class HumanController {
     @GetMapping(path = "/name")
     public @ResponseBody
     Map<String, String> getHumanName(@RequestParam String email, @RequestParam String password) {
-
         loginController.validateLoginInformation(email, password);
 
-        var human = humanRepository.findById(email);
-        if (human.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Human doesn't exist");
-        }
+        var human = getHumanByEmail(email);
 
         Map<String, String> map = new HashMap<>();
-        map.put("firstName", human.get().getFirstName());
-        map.put("lastName", human.get().getLastName());
+        map.put("firstName", human.getFirstName());
+        map.put("lastName", human.getLastName());
         return map;
     }
 
@@ -81,7 +74,20 @@ public class HumanController {
     Project getDefaultProject(@RequestParam String email, @RequestParam String password) {
         loginController.validateLoginInformation(email, password);
 
-        return humanRepository.findById(email).get().getDefaultProject();
+        return getHumanByEmail(email).getDefaultProject();
+    }
+
+    /**
+     * get the Human with this mail or throw Exception
+     *
+     * @param email email from the human
+     * @return Human
+     */
+    public Human getHumanByEmail(String email) {
+        var human = humanRepository.findById(email);
+        if (human.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Human doesn't exists");
+        return human.get();
     }
 
 }

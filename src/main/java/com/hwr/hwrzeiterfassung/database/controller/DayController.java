@@ -1,35 +1,35 @@
 package com.hwr.hwrzeiterfassung.database.controller;
 
+import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
 import com.hwr.hwrzeiterfassung.database.tables.Day;
+import com.hwr.hwrzeiterfassung.database.tables.Human;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.util.Objects;
+import java.time.LocalDate;
 
 /**
  * Controller for the Day
  */
 @Controller
 public class DayController {
+    @Autowired
+    private DayRepository dayRepository;
+
     /**
-     * calculates the time worked on this day
+     * get the day with the date from the human or if no day with this date exits for the human, then create a new day
      *
-     * @param day the day for calculate the time
-     * @return the working time for the day
+     * @param date  date of the day
+     * @param human human of the day
+     * @return Day
      */
-    public double calculateWorkingTime(Day day) {
-        double workingTime = 0;
-        Double workingTimeTarget = day.getTargetDailyWorkingTime();
-        Double workingTimeDifference = day.getWorkingTimeDifference();
-        if (Objects.isNull(workingTimeTarget)) {
-            workingTime += 0;
-        } else {
-            workingTime += workingTimeTarget;
+    public Day getDayOrCreateDayByDateAndHuman(LocalDate date, Human human) {
+        var dayList = dayRepository.findAllByDateAndHuman_Email(date, human.getEmail());
+        if (dayList.isEmpty()) {
+            dayRepository.saveAndFlush(new Day(date, human.getTargetDailyWorkingTime(), human));
+            dayList = dayRepository.findAllByDateAndHuman_Email(date, human.getEmail());
         }
-        if (Objects.isNull(workingTimeDifference)) {
-            workingTime += 0;
-        } else {
-            workingTime += workingTimeDifference;
-        }
-        return workingTime;
+        return dayList.get(0);
     }
+
 }

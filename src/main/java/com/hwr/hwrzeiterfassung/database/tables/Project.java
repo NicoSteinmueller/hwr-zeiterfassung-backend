@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table
 public class Project {
     /**
-     * the id for clearly identify on time in the DB
+     * the id for clear identification of one time in the DB
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

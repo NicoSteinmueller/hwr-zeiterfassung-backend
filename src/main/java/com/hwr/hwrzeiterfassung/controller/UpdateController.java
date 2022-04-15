@@ -20,9 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(path = "/update")
 public class UpdateController {
     @Autowired
-    private LoginRepository loginRepository;
-    @Autowired
     private LoginController loginController;
+    @Autowired
+    private LoginRepository loginRepository;
     @Autowired
     private HumanRepository humanRepository;
     @Autowired
@@ -38,7 +38,7 @@ public class UpdateController {
      */
     @PostMapping(path = "/password")
     public @ResponseStatus
-    HttpStatus changePassword(@RequestParam String email, @RequestParam String password, @RequestParam String newPassword) {
+    HttpStatus password(@RequestParam String email, @RequestParam String password, @RequestParam String newPassword) {
         loginController.validateLoginInformation(email, password);
         if (newPassword.length() != 256)
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Hash from new Password is not valid.");
@@ -58,7 +58,7 @@ public class UpdateController {
      */
     @PostMapping(path = "/lastName")
     public @ResponseStatus
-    HttpStatus changelastName(@RequestParam String email, @RequestParam String password, @RequestParam String newLastName) {
+    HttpStatus lastName(@RequestParam String email, @RequestParam String password, @RequestParam String newLastName) {
         loginController.validateLoginInformation(email, password);
         var human = humanRepository.getById(email);
         human.setLastName(newLastName);
@@ -76,7 +76,7 @@ public class UpdateController {
      */
     @PostMapping(path = "/targetDailyWorkingTime")
     public @ResponseStatus
-    HttpStatus changetargetDailyWorkingTime(@RequestParam String email, @RequestParam String password, @RequestParam double targetDailyWorkingTime) {
+    HttpStatus targetDailyWorkingTime(@RequestParam String email, @RequestParam String password, @RequestParam double targetDailyWorkingTime) {
         loginController.validateLoginInformation(email, password);
         var human = humanRepository.getById(email);
         human.setTargetDailyWorkingTime(targetDailyWorkingTime);
@@ -94,7 +94,7 @@ public class UpdateController {
      */
     @PostMapping(path = "/defaultProjectId")
     public @ResponseStatus
-    HttpStatus changedefaultProjectId(@RequestParam String email, @RequestParam String password, @RequestParam int projectId) {
+    HttpStatus defaultProjectId(@RequestParam String email, @RequestParam String password, @RequestParam int projectId) {
         loginController.validateLoginInformation(email, password);
         var human = humanRepository.getById(email);
         human.setDefaultProject(projectRepository.getById(projectId));
