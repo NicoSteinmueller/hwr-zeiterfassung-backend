@@ -23,6 +23,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for book all times
+ */
 @Controller
 @RequestMapping(path = "/book")
 public class BookController {
@@ -40,6 +43,17 @@ public class BookController {
     @Autowired
     private TimeController timeController;
 
+    /**
+     * add a time entry with the current time to the DB
+     *
+     * @param email     email for login validation
+     * @param password  hashed password for login validation
+     * @param isStart   if the time to book is a start of an entry
+     * @param pause     if the time is a pause
+     * @param note      a note for the entry
+     * @param projectId the project associated with the entry
+     * @return Http Status Accepted / Not Acceptable
+     */
     @PostMapping(path = "/time")
     public ResponseEntity<HttpStatus> addTimeEntry(@RequestParam String email, @RequestParam String password,
                                                    @RequestParam boolean isStart, @RequestParam boolean pause, @RequestParam String note, @RequestParam int projectId) {
@@ -109,7 +123,13 @@ public class BookController {
         }
     }
 
-
+    /**
+     * calculate the pause time with tow list from one day
+     *
+     * @param workList  list with working times of the day
+     * @param pauseList list with the pause times of the day
+     * @return pause time
+     */
     public double calculatePauseTime(List<Time> workList, List<Time> pauseList) {
         double pause = 0;
         pause += timeController.calculateEntriesTimeInMinutes(pauseList);
@@ -118,6 +138,11 @@ public class BookController {
         return pause;
     }
 
+    /**
+     * correct the pause time of a day
+     *
+     * @param day day to correct pause time
+     */
     public void correctPauseTime(Day day) {
         double workTime = day.getTargetDailyWorkingTime();
         double pauseTime = day.getPauseTime();
@@ -161,7 +186,13 @@ public class BookController {
         }
     }
 
-
+    /**
+     * get the last Time status of a human
+     *
+     * @param email    email for login validation
+     * @param password hashed password for login validation
+     * @return Optional of Time Action
+     */
     @GetMapping(path = "/lastTimeStatus")
     public @ResponseBody
     Optional<TimeAction> isTimeStatusToBookStart(@RequestParam String email, @RequestParam String password) {

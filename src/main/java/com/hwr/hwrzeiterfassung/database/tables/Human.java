@@ -1,6 +1,5 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,51 +7,65 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * this Entity is for save the human data
+ */
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "human")
+@Table
 public class Human {
+    /**
+     * the id for clearly identifying a human in the DB and the email of the human
+     */
     @Id
     //TODO Mail Validierung mit 64zeichen'@'255zeichen = 320
-    @Column(name = "email", columnDefinition = "VARCHAR(320)")
+    @Column(columnDefinition = "VARCHAR(320)")
     private String email;
 
-    @Column(name = "first_name", nullable = false, columnDefinition = "VARCHAR(256)")
+    /**
+     * the fist name of the human
+     */
+    @Column(nullable = false, columnDefinition = "VARCHAR(256)")
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, columnDefinition = "VARCHAR(256)")
+    /**
+     * the second name of the human
+     */
+    @Column(nullable = false, columnDefinition = "VARCHAR(256)")
     private String lastName;
 
-    @Column(name = "target_daily_working_time", columnDefinition = "DOUBLE")
+    /**
+     * the target daily working time of the human
+     */
+    @Column(columnDefinition = "DOUBLE")
     private Double targetDailyWorkingTime;
 
+    /**
+     * the supervisor of the human, which is also a human
+     */
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "supervisor_email")
+    @JoinColumn
     private Human supervisor;
 
-    @OneToMany(mappedBy = "supervisor")
-    private Set<Human> subordinate;
-
+    /**
+     * the project that the human uses by default
+     */
     @ManyToOne(cascade = CascadeType.ALL)
     private Project defaultProject;
 
+    /**
+     * the role that the human has
+     */
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_name", referencedColumnName = "name")
+    @JoinColumn
     private Role role;
 
-    @OneToOne(mappedBy = "human", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    @JsonIgnore
-    private Login login;
-
-
-    @OneToMany(mappedBy = "human")
-    @JsonIgnore
-    private Set<Day> days;
-
+    /**
+     * the projects that humans have access to
+     */
     @ManyToMany
-    @JoinTable(name = "project_access")
+    @JoinTable
     private Set<Project> projects;
 }

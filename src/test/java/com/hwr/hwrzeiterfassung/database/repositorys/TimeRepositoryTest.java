@@ -13,14 +13,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * The type Time repository test.
+ */
 @DataJpaTest
 @AutoConfigureTestEntityManager
 class TimeRepositoryTest {
+    /**
+     * The Time repository.
+     */
     @Autowired
     TimeRepository timeRepository;
 
+    /**
+     * Find all by day and pause.
+     */
     @Test
     void findAllByDayAndPause() {
         LocalDate date = LocalDate.of(2022, 4, 1);
@@ -44,6 +53,9 @@ class TimeRepositoryTest {
         assertEquals(time, test.get(0));
     }
 
+    /**
+     * Find all by day.
+     */
     @Test
     void findAllByDay() {
         LocalDate date = LocalDate.of(2022, 4, 1);

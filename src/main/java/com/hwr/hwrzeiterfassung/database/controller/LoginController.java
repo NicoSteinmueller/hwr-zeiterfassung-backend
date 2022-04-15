@@ -13,12 +13,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+/**
+ * Controller for the Login and the Login validation
+ */
 @Controller
 @RequestMapping("/login")
 public class LoginController {
     @Autowired
     private LoginRepository loginRepository;
 
+    /**
+     * Login for the app / website
+     *
+     * @param email    the email of the human
+     * @param password hashed password of the human
+     * @return HttpStatus Accepted or throw Not_Acceptable
+     */
     @PostMapping("/basicLogin")
     public ResponseEntity<HttpStatus> basicLogin(@RequestParam String email, @RequestParam String password) {
         Optional<Login> login = loginRepository.findById(email);
@@ -29,7 +39,12 @@ public class LoginController {
         }
     }
 
-
+    /**
+     * method to prof the Login information, that throw an exception, when the Credentials are invalid
+     *
+     * @param email    the email of the human
+     * @param password the hashed password of the human
+     */
     public void validateLoginInformation(String email, String password) {
         Optional<Login> login = loginRepository.findById(email);
         if (login.isEmpty() || !login.get().getPassword().equals(password))
