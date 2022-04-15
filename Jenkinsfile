@@ -53,7 +53,7 @@ tools {
             }
         }
 
-        stage('SonarQube analysis') {
+/*         stage('SonarQube analysis') {
             steps {
                  withSonarQubeEnv(installationName: 'sonarqube') {
                    sh "mvn sonar:sonar -Dsonar.projectKey=HWR-Zeiterfassung"
@@ -61,7 +61,7 @@ tools {
             }
         }
 
-/*          stage("Quality Gate") {
+         stage("Quality Gate") {
             steps {
                 script {
                     timeout(time: 10, unit: 'MINUTES') {

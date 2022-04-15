@@ -1,11 +1,16 @@
 package com.hwr.hwrzeiterfassung.database.tables;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hwr.hwrzeiterfassung.response.models.DayOverviewFull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * this Entity is for the single day data
@@ -56,6 +61,13 @@ public class Day {
     private Human human;
 
     /**
+     * times from the day
+     */
+    @OneToMany(mappedBy = "day")
+    @JsonIgnore
+    private Set<Time> times;
+
+    /**
      * constructor for the Day
      *
      * @param date                   the date for the day
@@ -67,4 +79,50 @@ public class Day {
         this.targetDailyWorkingTime = targetDailyWorkingTime;
         this.human = human;
     }
+
+    /**
+     * calculates the time worked on this day
+     *
+     * @return the working time for the day
+     */
+    public double calculateWorkingTime() {
+        double workingTime = 0;
+        if (Objects.isNull(targetDailyWorkingTime))
+            workingTime += 0;
+        else
+            workingTime += targetDailyWorkingTime;
+        if (Objects.isNull(workingTimeDifference))
+            workingTime += 0;
+        else
+            workingTime += workingTimeDifference;
+
+        return workingTime;
+    }
+
+    /**
+     * create a Full Overview from this day
+     *
+     * @return Day Overview Full
+     */
+    public DayOverviewFull getDayOverviewFull() {
+        if (times.isEmpty())
+            return new DayOverviewFull(date, null, null, pauseTime, calculateWorkingTime());
+
+        var dayStart = LocalDateTime.MAX;
+        var dayEnd = LocalDateTime.MIN;
+
+        for (Time time : times) {
+            if (time.getStart() != null && dayStart.isAfter(time.getStart()))
+                dayStart = time.getStart();
+            if (time.getEnd() != null && dayEnd.isBefore(time.getEnd()))
+                dayEnd = time.getEnd();
+        }
+        if (dayStart == LocalDateTime.MAX)
+            dayStart = null;
+        if (dayEnd == LocalDateTime.MIN)
+            dayEnd = null;
+
+        return new DayOverviewFull(date, dayStart, dayEnd, pauseTime, calculateWorkingTime());
+    }
+
 }

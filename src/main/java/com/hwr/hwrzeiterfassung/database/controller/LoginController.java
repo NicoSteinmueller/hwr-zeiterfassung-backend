@@ -31,12 +31,8 @@ public class LoginController {
      */
     @PostMapping("/basicLogin")
     public ResponseEntity<HttpStatus> basicLogin(@RequestParam String email, @RequestParam String password) {
-        Optional<Login> login = loginRepository.findById(email);
-        if (login.isPresent() && login.get().getPassword().equals(password)) {
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
+        validateLoginInformation(email, password);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     /**
@@ -49,7 +45,5 @@ public class LoginController {
         Optional<Login> login = loginRepository.findById(email);
         if (login.isEmpty() || !login.get().getPassword().equals(password))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "User Credentials invalid");
-
-
     }
 }
