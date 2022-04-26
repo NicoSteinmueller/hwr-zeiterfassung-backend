@@ -13,6 +13,7 @@ import com.hwr.hwrzeiterfassung.response.models.TimeCompact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,8 +78,7 @@ public class CorrectTimeController {
      * @return HttpStatus Accepted or Not_Acceptable
      */
     @PostMapping(path = "/times")
-    public @ResponseStatus
-    HttpStatus changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
+    public ResponseEntity<HttpStatus> changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
         loginController.validateLoginInformation(email, password);
 
         var days = dayRepository.findAllByDateAndHuman_Email(dateAndListOfTimes.getDate(), email);
@@ -102,7 +102,7 @@ public class CorrectTimeController {
         var workTime = timeController.calculateEntriesTimeInMinutes(timeRepository.findAllByDayAndPause(day, false)) / (double) 60;
         day.setWorkingTimeDifference(workTime - day.getTargetDailyWorkingTime());
         dayRepository.saveAndFlush(day);
-        return HttpStatus.ACCEPTED;
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 }
