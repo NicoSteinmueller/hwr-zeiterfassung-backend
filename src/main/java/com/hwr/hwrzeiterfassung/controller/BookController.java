@@ -120,7 +120,7 @@ public class BookController {
             var lastTimes = timeRepository.findAllByDayAndPause(lastDay, pause);
 
             if (!lastTimes.isEmpty())
-                return Optional.of(lastTimes.get(lastDays.size() - 1));
+                return Optional.of(lastTimes.get(lastTimes.size() - 1));
         }
         return Optional.empty();
     }
