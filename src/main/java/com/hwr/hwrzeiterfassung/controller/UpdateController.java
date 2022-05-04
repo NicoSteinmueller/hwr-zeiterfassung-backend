@@ -39,7 +39,7 @@ public class UpdateController {
     @PostMapping(path = "/password")
     public ResponseEntity<HttpStatus> password(@RequestParam String email, @RequestParam String password, @RequestParam String newPassword) {
         loginController.validateLoginInformation(email, password);
-        if (newPassword.length() != 256)
+        if (newPassword.length() != 64)
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Hash from new Password is not valid.");
         var login = loginRepository.getById(email);
         login.setPassword(newPassword);
