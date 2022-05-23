@@ -1,5 +1,6 @@
 package com.hwr.hwrzeiterfassung.controller;
 
+import com.hwr.hwrzeiterfassung.database.controller.HumanController;
 import com.hwr.hwrzeiterfassung.database.controller.LoginController;
 import com.hwr.hwrzeiterfassung.database.controller.TimeController;
 import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
@@ -37,6 +38,8 @@ public class CorrectTimeController {
     private TimeRepository timeRepository;
     @Autowired
     private TimeController timeController;
+    @Autowired
+    private HumanController humanController;
 
     /**
      * get the information's and times of a day
@@ -84,9 +87,11 @@ public class CorrectTimeController {
 
         var days = dayRepository.findAllByDateAndHuman_Email(dateAndListOfTimes.getDate(), email);
         Day day;
-        if (days.isEmpty())
+        if (days.isEmpty()) {
             day = new Day();
-        else
+            day.setDate(dateAndListOfTimes.getDate());
+            day.setHuman(humanController.getHumanByEmail(email));
+        } else
             day = days.get(0);
 
         day.setTargetDailyWorkingTime(targetDailyWorkingTime);
