@@ -84,12 +84,16 @@ public class CorrectTimeController {
     @PostMapping(path = "/times")
     public ResponseEntity<HttpStatus> changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
         loginController.validateLoginInformation(email, password);
+        var date = dateAndListOfTimes.getDate();
 
-        var days = dayRepository.findAllByDateAndHuman_Email(dateAndListOfTimes.getDate(), email);
+        if (date.isBefore(LocalDate.now().minusMonths(3)))
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Revision security error (max period for changes are 3 months)");
+
+        var days = dayRepository.findAllByDateAndHuman_Email(date, email);
         Day day;
         if (days.isEmpty()) {
             day = new Day();
-            day.setDate(dateAndListOfTimes.getDate());
+            day.setDate(date);
             day.setHuman(humanController.getHumanByEmail(email));
         } else
             day = days.get(0);
