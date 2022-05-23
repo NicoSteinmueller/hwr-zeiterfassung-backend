@@ -1,10 +1,12 @@
 package com.hwr.hwrzeiterfassung.controller;
 
+import com.hwr.hwrzeiterfassung.database.controller.HumanController;
 import com.hwr.hwrzeiterfassung.database.controller.LoginController;
 import com.hwr.hwrzeiterfassung.database.controller.TimeController;
 import com.hwr.hwrzeiterfassung.database.repositorys.DayRepository;
 import com.hwr.hwrzeiterfassung.database.repositorys.TimeRepository;
 import com.hwr.hwrzeiterfassung.database.tables.Day;
+import com.hwr.hwrzeiterfassung.database.tables.Human;
 import com.hwr.hwrzeiterfassung.database.tables.Project;
 import com.hwr.hwrzeiterfassung.database.tables.Time;
 import com.hwr.hwrzeiterfassung.response.models.DateAndListOfTimes;
@@ -25,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -39,6 +42,8 @@ class CorrectTimeControllerTest {
     TimeRepository timeRepository;
     @Mock
     TimeController timeController;
+    @Mock
+    HumanController humanController;
     @InjectMocks
     CorrectTimeController correctTimeController;
 
@@ -114,6 +119,7 @@ class CorrectTimeControllerTest {
 
         when(dayRepository.findAllByDateAndHuman_Email(Mockito.any(), Mockito.anyString())).thenReturn(new ArrayList<>());
         when(timeRepository.findAllByDayAndPause(Mockito.any(), Mockito.anyBoolean())).thenReturn(times);
+        when(humanController.getHumanByEmail(Mockito.any())).thenReturn(new Human());
 
         var result = correctTimeController.changeDayTimes("", "", input, 8.0);
         assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
