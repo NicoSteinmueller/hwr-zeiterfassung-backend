@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,8 +92,13 @@ public class CorrectTimeController {
         day.setTargetDailyWorkingTime(targetDailyWorkingTime);
 
         List<Time> times = new ArrayList<>();
-        for (var timeInput : dateAndListOfTimes.getTimes())
+        for (var timeInput : dateAndListOfTimes.getTimes()) {
+            if (!times.isEmpty() && (times.get(times.size() - 1).getEnd().isAfter(timeInput.getStart()) || !timeInput.getStart().isAfter(timeInput.getEnd()))) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Times not valid");
+            }
             times.add(new Time(timeInput.getStart(), timeInput.getEnd(), timeInput.isPause(), timeInput.getNote(), day, timeInput.getProject()));
+
+        }
 
         dayRepository.saveAndFlush(day);
         timeRepository.deleteAllByDay(day);
