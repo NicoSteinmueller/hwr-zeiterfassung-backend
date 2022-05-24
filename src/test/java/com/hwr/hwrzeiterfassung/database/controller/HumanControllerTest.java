@@ -3,7 +3,6 @@ package com.hwr.hwrzeiterfassung.database.controller;
 import com.hwr.hwrzeiterfassung.database.repositorys.HumanRepository;
 import com.hwr.hwrzeiterfassung.database.tables.Human;
 import com.hwr.hwrzeiterfassung.database.tables.Project;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,7 +16,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -32,7 +32,7 @@ class HumanControllerTest {
     HumanController humanController;
 
     @Test
-    void getProjectsWithUserAccess(){
+    void getProjectsWithUserAccess() {
         String email = "Test";
         String password = "Test";
         Human human = new Human();
@@ -51,7 +51,7 @@ class HumanControllerTest {
     }
 
     @Test
-    void humanHasNoProject(){
+    void humanHasNoProject() {
         String email = "Test";
         String password = "Test";
         Human human = new Human();
@@ -65,7 +65,7 @@ class HumanControllerTest {
     }
 
     @Test
-    void getHumanName(){
+    void getHumanName() {
         String email = "Test";
         String password = "Test";
         Human human = new Human();
@@ -80,7 +80,7 @@ class HumanControllerTest {
     }
 
     @Test
-    void getDefaultProject(){
+    void getDefaultProject() {
         String email = "Test";
         String password = "Test";
 
@@ -94,11 +94,11 @@ class HumanControllerTest {
         human.setDefaultProject(project);
 
         var result = humanController.getDefaultProject(email, password);
-        assertEquals("test", result.getName());
+        assertEquals("test", result.get().getName());
     }
 
     @Test
-    void noDefaultProject(){
+    void noDefaultProject() {
         String email = "Test";
         String password = "Test";
         Human human = new Human();
@@ -113,8 +113,7 @@ class HumanControllerTest {
         human.setProjects(projects);
 
         var result = humanController.getDefaultProject(email, password);
-        assertEquals(null, result);
-        //Vielleicht wollen wir nicht null zurück?
+        assertEquals(Optional.empty(), result);
     }
 
     @Test
@@ -127,6 +126,7 @@ class HumanControllerTest {
         when(humanRepository.findById(Mockito.anyString())).thenReturn(Optional.of(human));
 
         var result = humanController.getHumanByEmail(email);
+        assertEquals("Test", result.getEmail());
     }
 
     @Test
