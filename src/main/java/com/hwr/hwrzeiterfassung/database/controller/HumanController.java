@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Controller for the human
@@ -71,10 +72,10 @@ public class HumanController {
      */
     @GetMapping(path = "/getDefaultProject")
     public @ResponseBody
-    Project getDefaultProject(@RequestParam String email, @RequestParam String password) {
+    Optional<Project> getDefaultProject(@RequestParam String email, @RequestParam String password) {
         loginController.validateLoginInformation(email, password);
 
-        return getHumanByEmail(email).getDefaultProject();
+        return Optional.ofNullable(getHumanByEmail(email).getDefaultProject());
     }
 
     /**
