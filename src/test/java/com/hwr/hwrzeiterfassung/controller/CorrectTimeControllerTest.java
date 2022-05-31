@@ -112,6 +112,8 @@ class CorrectTimeControllerTest {
         timesCompact.add(timeCompact);
         Day day = new Day();
         day.setDate(date);
+        day.setWorkingTimeDifference(0.0);
+        day.setTargetDailyWorkingTime(8.0);
         Time time = new Time(start, end, false, "", day, project);
         List<Time> times = new ArrayList<>();
         times.add(time);
@@ -121,7 +123,7 @@ class CorrectTimeControllerTest {
         when(timeRepository.findAllByDayAndPause(Mockito.any(), Mockito.anyBoolean())).thenReturn(times);
         when(humanController.getHumanByEmail(Mockito.any())).thenReturn(new Human());
 
-        var result = correctTimeController.changeDayTimes("", "", input, 8.0);
+        var result = correctTimeController.changeDayTimes("", "", input);
         assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
     }
 
@@ -147,7 +149,7 @@ class CorrectTimeControllerTest {
         when(dayRepository.findAllByDateAndHuman_Email(Mockito.any(), Mockito.anyString())).thenReturn(days);
         when(timeRepository.findAllByDayAndPause(Mockito.any(), Mockito.anyBoolean())).thenReturn(times);
 
-        var result = correctTimeController.changeDayTimes("", "", input, 8.0);
+        var result = correctTimeController.changeDayTimes("", "", input);
         assertEquals(new ResponseEntity<>(HttpStatus.ACCEPTED), result);
     }
 }
