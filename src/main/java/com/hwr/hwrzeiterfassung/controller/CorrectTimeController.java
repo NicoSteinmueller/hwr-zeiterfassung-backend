@@ -78,11 +78,10 @@ public class CorrectTimeController {
      * @param email                  email for login validation
      * @param password               hashed password for login validation
      * @param dateAndListOfTimes     the date of the day and a list of the new times for the day
-     * @param targetDailyWorkingTime the target working time for this day
      * @return HttpStatus Accepted or Not_Acceptable
      */
     @PostMapping(path = "/times")
-    public ResponseEntity<HttpStatus> changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestParam DateAndListOfTimes dateAndListOfTimes, @RequestParam double targetDailyWorkingTime) {
+    public ResponseEntity<HttpStatus> changeDayTimes(@RequestParam String email, @RequestParam String password, @RequestBody DateAndListOfTimes dateAndListOfTimes) {
         loginController.validateLoginInformation(email, password);
         var date = dateAndListOfTimes.getDate();
 
@@ -98,24 +97,21 @@ public class CorrectTimeController {
         } else
             day = days.get(0);
 
-        day.setTargetDailyWorkingTime(targetDailyWorkingTime);
-
         List<Time> times = new ArrayList<>();
         for (var timeInput : dateAndListOfTimes.getTimes()) {
-            if (!times.isEmpty() && (times.get(times.size() - 1).getEnd().isAfter(timeInput.getStart()) || !timeInput.getStart().isAfter(timeInput.getEnd()))) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Times not valid");
+            if (timeInput.getStart().isAfter(timeInput.getEnd())) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "At least one time is invalid.");
             }
             times.add(new Time(timeInput.getStart(), timeInput.getEnd(), timeInput.isPause(), timeInput.getNote(), day, timeInput.getProject()));
-
         }
 
         dayRepository.saveAndFlush(day);
-        timeRepository.deleteAllByDay(day);
-        timeRepository.saveAllAndFlush(times);
+        timeRepository.deleteAll(timeRepository.findAllByDay(day));
+        times.forEach(time -> timeRepository.saveAndFlush(time));
 
         day.setPauseTime(timeController.calculatePauseTime(day));
         var workTime = timeController.calculateEntriesTimeInMinutes(timeRepository.findAllByDayAndPause(day, false)) / (double) 60;
-        day.setWorkingTimeDifference(workTime - day.getTargetDailyWorkingTime());
+        try{day.setWorkingTimeDifference(workTime - day.getTargetDailyWorkingTime());} catch (NullPointerException e) { }
         dayRepository.saveAndFlush(day);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
