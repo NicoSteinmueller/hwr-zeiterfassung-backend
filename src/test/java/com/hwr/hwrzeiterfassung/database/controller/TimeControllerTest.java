@@ -158,7 +158,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 5.9, human);
+        Day day = new Day(date, 6.0, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
@@ -172,7 +172,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 6.0, human);
+        Day day = new Day(date, 6.1, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
@@ -186,7 +186,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 8.9, human);
+        Day day = new Day(date, 9.0, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
@@ -200,7 +200,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 9.0, human);
+        Day day = new Day(date, 9.1, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
@@ -214,7 +214,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 9.9, human);
+        Day day = new Day(date, 10.0, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
@@ -228,7 +228,7 @@ class TimeControllerTest {
         human.setEmail("test");
         human.setFirstName("Tester");
         human.setLastName("Van Test");
-        Day day = new Day(date, 10.0, human);
+        Day day = new Day(date, 10.1, human);
 
         day.setPauseTime(0.25);
         timeController.correctPauseTime(day);
