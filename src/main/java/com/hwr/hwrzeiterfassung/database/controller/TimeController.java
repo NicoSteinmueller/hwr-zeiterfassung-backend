@@ -126,13 +126,13 @@ public class TimeController {
      * @return the minimal pause
      */
     public double getMinPause(double workTime) {
-        if (workTime >= 10)
+        if (workTime > 10)
             return 1;
 
-        if (workTime >= 9)
+        if (workTime > 9)
             return (double) 45 / 60;
 
-        if (workTime >= 6)
+        if (workTime > 6)
             return (double) 30 / 60;
         return 0;
     }
@@ -175,8 +175,8 @@ public class TimeController {
         }
         var time = times.get(times.size() - 1);
         if (time.getEnd() == null)
-            return Optional.of(new TimeAction(false, time.isPause(), time.getProject().getId()));
-        return Optional.of(new TimeAction(true, time.isPause(), time.getProject().getId()));
+            return Optional.of(new TimeAction(true, time.isPause(), time.getProject().getId()));
+        return Optional.of(new TimeAction(false, time.isPause(), time.getProject().getId()));
     }
 
 }
